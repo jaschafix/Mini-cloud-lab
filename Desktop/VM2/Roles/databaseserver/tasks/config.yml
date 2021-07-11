@@ -1,0 +1,57 @@
+---
+- name: copy my.cnf
+  copy:
+    src: .my.cnf
+    dest: /home/vagrant/.my.cnf
+    owner: vagrant
+    mode: 0600
+
+- name: restart mysql 
+  service:
+    name: mysql
+    state: restarted
+
+- name: update mysql root password
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    host: localhost
+    login_user: root
+    login_password: ""
+    name: root
+    password: "{{ mysql_root_password }}"
+
+- name: update root priviliges
+  mysql_user:
+    host: "%"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: 'root'
+    password: "{{ mysql_root_password }}"
+    check_implicit_admin: yes
+    priv: "*.*:ALL,GRANT"
+
+- name: maak test database
+  mysql_db:
+    name: testdb
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+
+- name: kopieer database file
+  copy: 
+    src: database.sql
+    dest: /tmp/database.sql
+
+- name: importeer database met database file
+  mysql_db:
+    name: testdb
+    state: import
+    target: /tmp/database.sql
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+
+- name: copy mysql config
+  copy:
+    src: mysqld.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+...

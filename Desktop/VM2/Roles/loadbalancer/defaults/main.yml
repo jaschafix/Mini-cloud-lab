@@ -1,0 +1,4 @@
+---
+# defaults file for loadbalancer
+host_ipaddress: "{{ansible_enp0s8.ipv4.address}}"
+...

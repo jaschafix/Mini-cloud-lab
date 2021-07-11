@@ -1,0 +1,52 @@
+Vagrant.configure("2") do |config|
+
+  AantalWeb = 2
+  Naam = "testklant"
+  Omgeving = "Productie"
+  Netwerk = "192.168.10."
+  Geheugen = 512
+
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = ["~/.ssh/id_rsa","~/.vagrant.d/insecure_private_key"]
+
+    #loadbalancer vms aanmaken
+    #TO DO variables meegeven voor hostnaam en vm naam
+    # kijken hoe ik ip adres slimmer kan meegeven
+	config.vm.define "#{Naam}-#{Omgeving}-loadbalancer" do |lb|
+   	  lb.vm.box = "ubuntu/bionic64"
+   	  lb.vm.hostname = "#{Naam}-#{Omgeving}-LB"
+   	  lb.vm.network "private_network", ip: "#{Netwerk}10"
+   	  lb.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+   	  lb.vm.provider "virtualbox" do |vb|
+   	  	vb.memory = Geheugen
+   	  	vb.gui = false
+   	  	vb.name = "t#{Naam}-#{Omgeving}-loadbalancer"
+   	  end
+   	end
+
+  config.vm.define "#{Naam}-#{Omgeving}-databaseserver" do |db|
+      db.vm.box = "ubuntu/bionic64"
+      db.vm.hostname = "#{Naam}-#{Omgeving}-DB"
+      db.vm.network "private_network", ip: "#{Netwerk}11"
+      db.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      db.vm.provider "virtualbox" do |vb|
+        vb.memory = Geheugen
+        vb.gui = false
+        vb.name = "#{Naam}-#{Omgeving}-databaserver"
+      end
+    end
+    #TO DO variables meegeven voor hostnaam en vm naam
+  (1..AantalWeb). each do |i|
+    config.vm.define "#{Naam}-#{Omgeving}webserver#{i}" do |web|
+      web.vm.box = "ubuntu/bionic64"
+      web.vm.hostname = "#{Naam}-WS-#{i}"
+      web.vm.network "private_network", ip: "#{Netwerk}1#{i+1}"
+      web.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      web.vm.provider "virtualbox" do |vb|
+        vb.memory = Geheugen 
+        vb.gui = false
+        vb.name = "#{Naam}-#{Omgeving}webserver#{i}"
+      end
+    end
+  end
+ end

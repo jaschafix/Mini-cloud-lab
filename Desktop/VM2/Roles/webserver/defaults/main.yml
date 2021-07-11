@@ -1,0 +1,4 @@
+---
+# defaults file for /home/student/Desktop/VM2/Roles/webserver
+host_name: "{{ansible_hostname}}"
+...

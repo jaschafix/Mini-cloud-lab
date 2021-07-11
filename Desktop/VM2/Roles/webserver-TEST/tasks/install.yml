@@ -1,0 +1,21 @@
+---
+- name: Installeer apache
+  apt:
+    name: apache2
+    update_cache: yes
+    state: present
+
+- name: Installeer PHP
+  apt:
+    name: php
+    update_cache: yes
+    state: present
+
+- name: Instaleer php extensions
+  apt:
+    pkg:
+      - php-mysql
+      - libapache2-mod-php
+    update_cache: yes
+    state: present
+...

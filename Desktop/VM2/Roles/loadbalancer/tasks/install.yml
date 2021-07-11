@@ -1,0 +1,7 @@
+---
+- name: Installeer HAProxy
+  apt:
+    name: haproxy
+    update_cache: yes
+    state: present
+...

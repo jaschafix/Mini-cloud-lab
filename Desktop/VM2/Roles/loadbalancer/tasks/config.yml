@@ -1,0 +1,6 @@
+---
+- name: configuratie file kopieren
+  template:
+    src: "haproxy.cfg"
+    dest: "/etc/haproxy/haproxy.cfg"
+...

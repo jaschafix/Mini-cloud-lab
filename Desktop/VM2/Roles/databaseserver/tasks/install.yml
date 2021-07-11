@@ -1,0 +1,29 @@
+---
+- name: update apt-get repo
+  apt: 
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 3600
+
+- name: Installeer mysql
+  apt: 
+    name: ['mysql-client', 'mysql-server', 'python-mysqldb', 'libmysqlclient-dev']
+    state: latest 
+    update_cache: yes
+
+- name: Installeer pip
+  apt:
+    name: python3-pip
+    update_cache: yes
+    state: present
+
+- name: Mysqld service starten
+  service:
+    name: mysql
+    state: started
+
+- name: Instaleer python3 mysql module
+  pip:
+    name: pymysql
+    state: present
+...

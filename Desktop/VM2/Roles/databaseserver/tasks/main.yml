@@ -1,0 +1,6 @@
+---
+# tasks file for /home/student/Desktop/VM2/Roles/databaserver
+- import_tasks: install.yml
+- import_tasks: config.yml
+- import_tasks: service.yml
+...

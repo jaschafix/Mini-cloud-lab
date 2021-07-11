@@ -1,0 +1,56 @@
+Vagrant.configure("2") do |config|
+
+  AantalWeb 
+  Naam 
+  Omgeving 
+  Netwerk 
+  Webserver_geheugen 
+  Webserver_cpu 
+  Database_geheugen 
+  Database_cpu 
+  Loadbalancer_geheugen
+  Loadbalancer_cpu 
+
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = ["~/.ssh/id_rsa","~/.vagrant.d/insecure_private_key"]
+
+	config.vm.define "#{Naam}-#{Omgeving}-loadbalancer" do |lb|
+   	  lb.vm.box = "ubuntu/bionic64"
+   	  lb.vm.hostname = "#{Naam}-#{Omgeving}-LB"
+   	  lb.vm.network "private_network", ip: "#{Netwerk}.10"
+   	  lb.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+   	  lb.vm.provider "virtualbox" do |vb|
+   	  	vb.memory = Loadbalancer_geheugen
+   	  	vb.gui = false
+   	  	vb.name = "#{Naam}-#{Omgeving}-loadbalancer"
+        vb.cpus = Loadbalancer_cpu
+   	  end
+   	end
+
+  config.vm.define "#{Naam}-#{Omgeving}-databaseserver" do |db|
+      db.vm.box = "ubuntu/bionic64"
+      db.vm.hostname = "#{Naam}-#{Omgeving}-DB"
+      db.vm.network "private_network", ip: "#{Netwerk}.11"
+      db.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      db.vm.provider "virtualbox" do |vb|
+        vb.memory = Database_geheugen
+        vb.gui = false
+        vb.name = "#{Naam}-#{Omgeving}-databaserver"
+        vb.cpus = Database_cpu
+      end
+    end
+  (1..AantalWeb). each do |i|
+    config.vm.define "#{Naam}-#{Omgeving}-webserver#{i}" do |web|
+      web.vm.box = "ubuntu/bionic64"
+      web.vm.hostname = "#{Naam}-#{Omgeving}-WS-#{i}"
+      web.vm.network "private_network", ip: "#{Netwerk}.1#{i+1}"
+      web.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+      web.vm.provider "virtualbox" do |vb|
+        vb.memory = Webserver_geheugen
+        vb.gui = false
+        vb.name = "#{Naam}-#{Omgeving}-webserver#{i}"
+        vb.cpus = Webserver_cpu
+      end
+    end
+  end
+ end

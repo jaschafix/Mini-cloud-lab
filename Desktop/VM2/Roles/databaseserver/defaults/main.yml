@@ -1,0 +1,4 @@
+---
+# defaults file for databaseserver
+mysql_root_password: root
+...

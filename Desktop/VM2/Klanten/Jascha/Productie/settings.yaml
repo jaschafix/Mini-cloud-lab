@@ -1,0 +1,8 @@
+---
+aantal_webservers: 2
+klantnaam: "Jascha"
+omgeving: "Productie"
+geheugen: 512
+netwerk: "192.168.20."
+
+...

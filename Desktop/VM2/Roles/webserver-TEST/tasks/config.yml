@@ -1,0 +1,6 @@
+---
+- name: copy index.php file
+  template: 
+    src: index.php 
+    dest: /var/www/html
+...
