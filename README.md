@@ -9,7 +9,7 @@ This project contains:
 
 The /VM2/Klanten folder contains an example folder with configurations for two types of deployments for the customer Jascha.
 
-dependancies:
+Dependancies:
 - python3
 - vagrant
 - virtualbox
